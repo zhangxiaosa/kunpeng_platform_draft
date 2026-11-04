@@ -560,6 +560,106 @@ svg{flex:none;}
 }
 .tune-note svg{width:13px;height:13px;color:var(--cy);flex:none;margin-top:2px;}
 
+/* ===== 调优对话流（主方案 v2：每轮文字+表格，曲线同屏刷新，中途可介入） ===== */
+.tune-chat-wrap{padding:12px 14px;display:flex;flex-direction:row;gap:12px;align-items:flex-start;}
+.tc-flow{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:9px;max-height:600px;overflow-y:auto;padding:2px 4px 2px 2px;}
+.tc-side{flex:0 0 330px;width:330px;display:flex;flex-direction:column;gap:10px;}
+.tc-msg{
+  background:var(--bg3);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.tc-msg.new{animation:tcIn .3s ease;}
+@keyframes tcIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.tc-msg.branch{border-left:2px solid var(--cy);}
+.tc-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tc-cp{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--acc-ink);background:var(--acc-soft);border-radius:6px;padding:2px 8px;flex:none;}
+.tc-cp.branch{color:var(--cy-ink);background:var(--cy-soft);}
+.tc-tag{font-size:10px;color:var(--ink4);font-family:var(--mono);flex:none;}
+.tc-name{flex:1 1 auto;min-width:0;font-size:11.5px;font-weight:600;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tc-time{font-family:var(--mono);font-size:9.5px;color:var(--ink4);flex:none;}
+.tc-body{font-size:11.5px;color:var(--ink3);line-height:1.7;}
+.tc-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:10.5px;}
+.tc-table th{
+  font-size:9.5px;color:var(--ink4);font-weight:500;text-align:left;padding:4px 8px;
+  border-bottom:1px solid var(--line);background:rgba(23,32,45,.03);font-family:var(--mono);
+}
+.tc-table td{font-family:var(--mono);color:var(--ink2);padding:4px 8px;border-bottom:1px solid var(--line);}
+.tc-table tr:last-child td{border-bottom:0;}
+.tc-table td.tc-up{color:var(--ok-ink);}
+.tc-table td.tc-down{color:var(--err-ink);}
+.tc-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px dashed var(--line3);padding-top:8px;}
+.tc-intv{
+  font-family:var(--sans);font-size:11px;color:var(--cy-ink);background:var(--cy-soft);
+  border:1px solid var(--cy);border-radius:999px;padding:4px 11px;cursor:pointer;transition:all .13s ease;
+  display:inline-flex;gap:5px;align-items:center;
+}
+.tc-intv:hover{background:var(--cy);color:#fff;}
+.tc-intv svg{width:11px;height:11px;}
+.tc-intv-off{font-size:10px;color:var(--ink4);font-family:var(--mono);}
+.tc-intv-panel{display:none;flex-direction:column;gap:6px;width:100%;padding-top:2px;}
+.tc-intv-panel.open{display:flex;}
+.tc-intv-panel .tip{font-size:10px;color:var(--ink4);}
+.tc-side .metric-box{flex:none;min-width:0;}
+.tc-side-metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.tc-side .chart-box .chart{height:190px;}
+
+/* ===== /goal 节点编排（主方案 v2：迁移→开发→调优 节点条，可点节点切换） ===== */
+.pl-wrap{padding:12px 14px;display:flex;flex-direction:column;gap:12px;}
+.pl-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.pl-title{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px;}
+.pl-title svg{width:14px;height:14px;color:var(--ok);}
+.pl-sub{font-size:10.5px;color:var(--ink4);}
+.pl-mode{margin-left:auto;display:flex;gap:2px;background:var(--bg2);border:1px solid var(--line2);border-radius:999px;padding:2px;}
+.pl-mode button{
+  font-family:var(--sans);font-size:11px;color:var(--ink3);border:0;background:transparent;
+  border-radius:999px;padding:4px 12px;cursor:pointer;
+}
+.pl-mode button.on{background:var(--acc-soft);color:var(--acc-ink);font-weight:600;}
+.pl-line{display:flex;align-items:stretch;gap:8px;background:var(--bg3);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;overflow-x:auto;}
+.pl-node{
+  flex:1 1 0;min-width:136px;background:var(--bg2);border:1px solid var(--line2);border-radius:9px;
+  padding:9px 10px;cursor:pointer;transition:all .13s ease;text-align:left;
+  display:flex;flex-direction:column;gap:5px;
+}
+.pl-node:hover{border-color:var(--acc);}
+.pl-node.active{border-color:var(--acc);background:var(--acc-soft);box-shadow:0 0 0 1px var(--acc) inset;}
+.pln-top{display:flex;align-items:center;gap:6px;}
+.pln-dot{width:7px;height:7px;border-radius:50%;background:var(--ink4);flex:none;}
+.pl-node.run .pln-dot{background:var(--acc);animation:pulse 1.6s infinite;}
+.pl-node.done .pln-dot{background:var(--ok);}
+.pl-node.waiting .pln-dot{background:var(--warn);}
+.pln-agent{font-family:var(--mono);font-size:9.5px;color:var(--ink4);flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pln-idx{font-family:var(--mono);font-size:9px;color:var(--ink4);flex:none;}
+.pln-name{font-size:12px;font-weight:700;color:var(--ink);}
+.pln-bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;}
+.pln-fill{height:100%;background:var(--acc);border-radius:3px;transition:width .5s ease;}
+.pl-node.done .pln-fill{background:var(--ok);}
+.pln-meta{font-family:var(--mono);font-size:9.5px;color:var(--ink4);}
+.pl-arrow{display:flex;align-items:center;flex:none;color:var(--ink4);}
+.pl-arrow svg{width:14px;height:14px;}
+.pl-arrow.done{color:var(--ok);}
+.pl-arrow.par{flex-direction:row;align-items:center;color:var(--acc);gap:3px;}
+.pl-dline{width:2px;height:12px;background:currentColor;border-radius:2px;}
+.pl-detail{display:flex;flex-direction:column;gap:10px;background:var(--bg3);border:1px solid var(--line2);border-radius:10px;padding:12px 14px;}
+.pld-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.pld-title{font-size:12.5px;font-weight:700;}
+.pld-sub{font-family:var(--mono);font-size:10px;color:var(--ink4);}
+.pld-bar-row{display:flex;align-items:center;gap:10px;}
+.pld-bar{flex:1 1 auto;height:8px;background:var(--line);border-radius:4px;overflow:hidden;}
+.pld-fill{height:100%;background:var(--acc);border-radius:4px;transition:width .5s ease;}
+.pld-pct{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);}
+.pld-cur{font-size:11.5px;color:var(--ink3);display:flex;align-items:center;gap:6px;}
+.pld-cur .spin-ico{color:var(--acc);}
+.pld-steps{display:flex;flex-direction:column;gap:6px;}
+.pld-step{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink3);}
+.plds-ico{width:13px;height:13px;flex:none;}
+.pld-step.done{color:var(--ink2);}
+.pld-step.done .plds-ico{color:var(--ok);}
+.pld-step.run .plds-ico{color:var(--acc);}
+.pld-foot{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px dashed var(--line3);padding-top:9px;}
+.f-label{font-size:10px;color:var(--ink4);}
+.pld-art{font-family:var(--mono);font-size:10px;color:var(--cy-ink);background:var(--cy-soft);border-radius:5px;padding:2px 8px;}
+
 /* ===== Watchdog ===== */
 .goal-wrap{padding:12px 14px;display:flex;flex-direction:column;gap:12px;}
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;}
@@ -752,6 +852,10 @@ svg{flex:none;}
   .tune-bot{grid-template-columns:1fr;}
   .main-col,.detail,.dbody,.dpane,.goal-wrap,.tune-wrap,.gauge-wrap,.chain-list{min-width:0;max-width:100%;}
   .dag-box{overflow-x:auto;max-width:100%;}
+  .tune-chat-wrap{flex-direction:column;}
+  .tc-side{flex:1 1 auto;width:100%;}
+  .tc-flow{max-height:none;}
+  .pl-wrap,.pl-line,.pl-detail{min-width:0;max-width:100%;}
 }
 @media (max-width: 700px){
   .topbar{padding:0 12px;gap:9px;}
@@ -1391,14 +1495,92 @@ var SAND_TREE = [
 /* ============================================================
  * 状态
  * ============================================================ */
+/* ---- 调优对话流：每轮消息数据 ---- */
+function paramOfRound(n){
+  var st = AGENT_DEFS.tuning.steps[n]||'';
+  var m = st.match(/第\d+轮 · ([^\d\s]+) (\d+)→(\d+)/);
+  if(!m){
+    if(st.indexOf('固化')>=0) return {k:'固化', v:'—', label:'最终配置'};
+    return {k:'—', v:'—', label:'—'};
+  }
+  var raw = m[1];
+  var lab = PARAMS.filter(function(p){ return p.k===raw||p.label===raw; })[0];
+  return {k:lab?lab.k:raw, v:m[3], label:lab?lab.label:raw};
+}
+function paramLabelOf(k){ var p = PARAMS.filter(function(x){ return x.k===k; })[0]; return p ? p.label : k; }
+function roundText(n, param, branch, from){
+  if(branch && branch!=='main'){
+    return '用户介入：从检查点 CP'+from+' 换调「'+(param.label||param.k)+'」→ '+param.v+'。主分支于此冻结，新分支继续压测寻优，最终与主分支对比。';
+  }
+  var st = (AGENT_DEFS.tuning.steps[n]||'').replace(/^第\d+轮 · /,'');
+  if(n===0) return '加载基线配置，完成指标采样（QPS / P99 / CPU / RSS），等待第一轮寻优。';
+  if(param.k==='—' || param.k==='固化'){
+    return '执行「'+st+'」：交叉验证前几轮参数组合，锁定收益最大的配置，准备固化交付。';
+  }
+  return '执行「'+st+'」：将 '+(param.label||param.k)+' 调整为 '+param.v+'，在 openEuler 沙箱回放流量压测，观测吞吐与延迟变化。';
+}
+function roundData(s, n, q, p, c, rs, branch, branchLabel, opt){
+  opt = opt||{};
+  var param = opt.param || paramOfRound(n);
+  var text = opt.text || roundText(n, param, branch, opt.from);
+  return {n:n, cp:opt.cp || ('CP'+n), branch:branch, branchLabel:branchLabel, param:param,
+          text:text, m:{qps:q,p99:p,cpu:c,rss:rs}, time:'t+'+Math.max(2,n*11)+'s', from:opt.from||null};
+}
+function roundName(r){
+  if(r.branch && r.branch!=='main') return '分支续调 · '+((r.param&&r.param.label)||'');
+  return (AGENT_DEFS.tuning.steps[r.n]||'检查点 CP'+r.n).replace(/^第\d+轮 · /,'');
+}
+function roundMsgHTML(s, r){
+  var isBranch = r.branch && r.branch!=='main';
+  var branchTag = isBranch
+    ? '<span class="tc-tag" style="color:var(--cy-ink)">'+esc(r.branchLabel)+'</span>'
+    : '<span class="tc-tag">主分支</span>';
+  var prev = r.n>0 ? s.tune.metrics.qps[r.n-1] : null;
+  var dQ = prev!=null ? r.m.qps-prev : 0;
+  var qCls = dQ>0?' tc-up':dQ<0?' tc-down':'';
+  var qTxt = r.m.qps.toLocaleString() + (dQ!==0 ? (dQ>0?' (+'+dQ.toLocaleString()+')':' ('+dQ.toLocaleString()+')') : '');
+  var rows = '<tr><td>'+esc(r.param.label||'—')+'</td><td>'+esc(r.param.v||'—')+'</td>'
+    + '<td class="'+qCls+'">'+qTxt+'</td><td>'+r.m.p99+'</td><td>'+r.m.cpu+'</td><td>'+r.m.rss.toFixed(2)+'</td></tr>';
+  var canIntv = !isBranch && r.n>=1 && r.n < s.i && s.status!=='done' && r.n < s.tune.metrics.qps.length-1;
+  var isLast = r.n===s.i;
+  var acts = '';
+  if(canIntv){
+    acts = '<div class="tc-acts"><button class="tc-intv" data-act="intervene" data-round="'+r.n+'">'+ico('branch')+'从这里继续调</button>'
+      + '<span class="tc-intv-off">介入 = 在此检查点换参数，长出新分支</span></div>'
+      + '<div class="tc-intv-panel" data-intv="'+r.n+'">'
+      + '<span class="tip">从 CP'+r.n+' 改调以下参数之一（主分支冻结，新分支从此继续）：</span>'
+      + '<div class="param-picker">'+PARAMS.map(function(p){
+          return '<button class="param-pick" data-act="intervene-param" data-round="'+r.n+'" data-param="'+p.k+'">'+p.label+'</button>';
+        }).join('')+'</div></div>';
+  } else if(isLast && s.status==='done'){
+    acts = '<div class="tc-acts"><span class="tc-intv-off">已收敛 · 固化此检查点，配置写入最终配置.conf</span></div>';
+  }
+  return '<div class="tc-msg'+(isBranch?' branch':'')+(isLast?' new':'')+'" id="tc-msg-'+r.n+'">'
+    + '<div class="tc-head">'
+    + '<span class="tc-cp'+(isBranch?' branch':'')+'">'+esc(r.cp)+'</span>'+branchTag
+    + '<span class="tc-name">'+esc(roundName(r))+'</span>'
+    + '<span class="tc-time">'+r.time+'</span></div>'
+    + '<div class="tc-body">'+esc(r.text)+'</div>'
+    + '<table class="tc-table"><colgroup>'
+    + '<col style="width:16%"><col style="width:12%"><col style="width:28%"><col style="width:14%"><col style="width:14%"><col style="width:16%">'
+    + '</colgroup><thead><tr><th>参数</th><th>本轮值</th><th>吞吐 QPS</th><th>P99 ms</th><th>CPU %</th><th>RSS GB</th></tr></thead>'
+    + '<tbody>'+rows+'</tbody></table>'
+    + acts
+    + '</div>';
+}
 function mkTune(i){
   var qps=[12000,12400,12900,13300,13800,14200];
   var p99=[84,80,76,74,71,69], cpu=[62,58,55,53,51,49], rss=[1.9,2.0,2.1,2.2,2.2,2.3];
   while(qps.length < i+1){ qps.push(qps[qps.length-1]+120); p99.push(p99[p99.length-1]-2); cpu.push(cpu[cpu.length-1]-1); rss.push(rss[rss.length-1]+0.1); }
+  var rounds = [];
+  var s = {tune:{metrics:{qps:qps.slice(0,i+1),p99:p99.slice(0,i+1),cpu:cpu.slice(0,i+1),rss:rss.slice(0,i+1)}, activeBranch:'main'}};
+  for(var n=0;n<=i;n++){
+    rounds.push(roundData(s, n, qps[n], p99[n], cpu[n], rss[n], 'main', '主分支', null));
+  }
   return {
     metrics:{qps:qps.slice(0,i+1), p99:p99.slice(0,i+1), cpu:cpu.slice(0,i+1), rss:rss.slice(0,i+1)},
     branches:[{id:'main', label:'主分支', from:0, pts:qps.slice(0,i+1), active:true, param:'—'}],
-    activeBranch:'main', cpPicked:null
+    activeBranch:'main', cpPicked:null, rounds:rounds
   };
 }
 function mkLogs(s){
@@ -1449,7 +1631,8 @@ function mkGoal(){
 var state = {
   view:'main', activeId:'s1', feedAgent:'migrate', wsTab:'host',
   sessions:null, seq:7, tickCount:0, lastLen:{}, stepOpen:{}, dpane:'log',
-  memOpen:false, toasts:[], charts:{}
+  memOpen:false, toasts:[], charts:{},
+  goalNode:0, goalMode:'serial'
 };
 function byId(id){ for(var i=0;i<state.sessions.length;i++){ if(state.sessions[i].id===id) return state.sessions[i]; } return null; }
 function active(){ return byId(state.activeId); }
@@ -1493,7 +1676,7 @@ function toast(title, sub, go, sid){
 function renderToasts(){
   var wrap = $('toast-wrap'); if(!wrap) return;
   wrap.innerHTML = state.toasts.map(function(t){
-    return '<div class="toast" data-act="toast-go" data-sid="'+(t.sid||'')+'">'
+    return '<div class="toast" role="button" tabindex="0" data-act="toast-go" data-sid="'+(t.sid||'')+'">'
       + '<span class="t-ico">'+ico('check')+'</span>'
       + '<span class="t-main"><span class="t-title">'+esc(t.title)+'</span>'
       + (t.sub ? '<span class="t-sub">'+esc(t.sub)+'</span>' : '')
@@ -1615,12 +1798,17 @@ function tuneStep(s){
   var b = branchById(s, s.tune.activeBranch);
   var m = s.tune.metrics;
   var isBranch = b.id!=='main';
+  if(isBranch) b.seq = (b.seq||1)+1;
   var qps = m.qps[m.qps.length-1] + (isBranch ? (120+((r*31)%420)-60) : (120+((r*37)%560)));
   var p99 = Math.max(55, m.p99[m.p99.length-1] - (isBranch?1:3));
   var cpu = Math.max(38, m.cpu[m.cpu.length-1] - 1);
   var rss = +(m.rss[m.rss.length-1] + 0.05).toFixed(2);
   m.qps.push(qps); m.p99.push(p99); m.cpu.push(cpu); m.rss.push(rss);
   b.pts.push(qps);
+  var bParam = (b.param && b.param!=='—') ? {k:b.param, v:'—', label:paramLabelOf(b.param)} : null;
+  var bOpt = {param:bParam, from:b.from};
+  if(isBranch) bOpt.cp = 'CP'+b.from+'·B'+(b.seq||1);
+  s.tune.rounds.push(roundData(s, r, qps, p99, cpu, rss, b.id, b.label, bOpt));
   s.logs.push({k:'run', t:'[tune] CP'+(s.i)+' 保存检查点 · 当前吞吐 '+qps+' QPS'});
 }
 function advanceGoal(s){
@@ -1628,22 +1816,50 @@ function advanceGoal(s){
   s.wait=(s.wait||0)+1;
   if(s.wait < s.pace) return;
   s.wait = 0;
-  var cur = null;
-  for(var i=0;i<g.sub.length;i++){ if(g.sub[i].status!=='done'){ cur=g.sub[i]; break; } }
-  if(!cur){ s.status='done'; s.logs.push({k:'ok',t:'[wd] 全链路完成，交付包已就绪'}); return; }
-  cur.pct = Math.min(100, cur.pct + 7);
-  if(cur.pct>=100){
-    cur.status='done';
-    var idx = i+1;
-    if(idx<g.sub.length){ g.sub[idx].status='running'; }
-    s.logs.push({k:'ok', t:'[wd] 子目标完成：'+cur.name+' → '+cur.art});
-    if(s.id!==state.activeId) toast('Watchdog：'+cur.name+' 完成','结果已进入串联链','查看 →',s.id);
+  var mode = state.goalMode || 'serial';
+  var doneAny = false;
+  if(mode==='parallel'){
+    /* 并发：所有 running 子目标同时推进 */
+    var anyRun = false;
+    g.sub.forEach(function(x){
+      if(x.status==='running'){
+        anyRun = true;
+        x.pct = Math.min(100, x.pct + 6);
+        if(x.pct>=100){
+          x.status='done'; doneAny = true;
+          s.logs.push({k:'ok', t:'[wd] 并发子目标完成：'+x.name+' → '+x.art});
+          if(s.id!==state.activeId) toast('Watchdog：'+x.name+' 完成','结果已进入串联链','查看 →',s.id);
+        }
+      }
+    });
+    if(!anyRun){
+      var nxt = g.sub.filter(function(x){ return x.status==='waiting'; })[0];
+      if(nxt){ nxt.status='running'; }
+      else{
+        s.status='done';
+        s.logs.push({k:'ok', t:'[wd] 全链路完成，交付包已就绪'});
+        return;
+      }
+    }
+  }else{
+    /* 串联：上一个完成，自动接力下一个 */
+    var cur = null;
+    for(var i=0;i<g.sub.length;i++){ if(g.sub[i].status!=='done'){ cur=g.sub[i]; break; } }
+    if(!cur){ s.status='done'; s.logs.push({k:'ok',t:'[wd] 全链路完成，交付包已就绪'}); return; }
+    cur.pct = Math.min(100, cur.pct + 7);
+    if(cur.pct>=100){
+      cur.status='done'; doneAny = true;
+      var idx = i+1;
+      if(idx<g.sub.length){ g.sub[idx].status='running'; }
+      s.logs.push({k:'ok', t:'[wd] 子目标完成：'+cur.name+' → '+cur.art});
+      if(s.id!==state.activeId) toast('Watchdog：'+cur.name+' 完成','结果已进入串联链','查看 →',s.id);
+    }
   }
   /* 更新 chain 状态 */
-  g.chain.forEach(function(c,ci){
+  g.chain.forEach(function(c){
     if(c.st==='done') return;
     var from = c.from;
-    if(from==='qa'){ c.st = (cur && cur.name.indexOf('质检')>=0) ? 'done' : c.st; return; }
+    if(from==='qa'){ c.st = g.sub[3].status==='done' ? 'done' : c.st; return; }
     var owner = g.sub.filter(function(x){ return x.agent.indexOf(from)>=0; })[0];
     if(owner && owner.status==='done') c.st='done';
   });
@@ -1835,17 +2051,18 @@ function renderWelcome(){
 
 function detailHTML(s){
   var isTune = s.agent==='tuning', isGoal = s.agent==='goal';
-  var tabs = [['log','执行日志']];
-  if(isTune) tabs.push(['tune','调优驾驶舱']);
-  if(isGoal) tabs.push(['goal','指挥中心']);
+  var tabs = [];
+  if(isTune) tabs.push(['chat','调优对话']);
+  else if(isGoal) tabs.push(['pipeline','全链路编排']);
+  else tabs.push(['log','执行日志']);
   tabs.push(['art','产物']); tabs.push(['mem','记忆']);
   var tabHtml = tabs.map(function(t,i){
     return '<button class="dtab'+(i===0?' active':'')+'" data-pane="'+t[0]+'">'+t[1]+'</button>';
   }).join('');
   var panes = '';
-  panes += '<div class="dpane active" data-pane="log"><div class="logview" id="log-'+s.id+'"></div></div>';
-  if(isTune) panes += '<div class="dpane" data-pane="tune">'+tuneHTML(s)+'</div>';
-  if(isGoal) panes += '<div class="dpane" data-pane="goal">'+goalHTML(s)+'</div>';
+  if(isTune) panes += '<div class="dpane active" data-pane="chat">'+tuneChatHTML(s)+'</div>';
+  else if(isGoal) panes += '<div class="dpane active" data-pane="pipeline">'+goalPipelineHTML(s)+'</div>';
+  else panes += '<div class="dpane active" data-pane="log"><div class="logview" id="log-'+s.id+'"></div></div>';
   panes += '<div class="dpane" data-pane="art">'+artHTML(s)+'</div>';
   panes += '<div class="dpane" data-pane="mem">'+memHTML(s)+'</div>';
   var def = AGENT_DEFS[s.agent];
@@ -1881,24 +2098,48 @@ function stepState(s, j){
 }
 function stepIcon(st){ return st==='done'?ico('check'):st==='run'?ico('spinner'):ico('clock'); }
 function stepName(s,j){ return s.agent==='tuning' ? s.steps[j] : s.steps[j]; }
-function tuneHTML(s){
-  return '<div class="tune-wrap">'
-    + '<div class="tune-top" id="tune-metrics"></div>'
+function tuneChatHTML(s){
+  return '<div class="tune-chat-wrap">'
+    + '<div class="tc-flow" id="tune-flow">'
+    + s.tune.rounds.map(function(r){ return roundMsgHTML(s, r); }).join('')
+    + '</div>'
+    + '<div class="tc-side">'
+    + '<div class="tc-side-metrics" id="tune-metrics"></div>'
     + '<div class="chart-box"><div class="cb-head">'+ico('curve')+'调优曲线 · 吞吐 QPS vs 检查点'
-    + '<span class="tail">基线 → CP'+Math.min(s.i,9)+' · 分支可切换</span></div>'
+    + '<span class="tail">每完成一轮同屏刷新</span></div>'
     + '<div class="chart" id="chart-tune-main"></div></div>'
-    + '<div class="tune-bot">'
-    + '<div class="cp-list"><div class="cp-head">'+ico('clock')+'检查点清单<span class="tail">每轮一个 · 点击 + 新建分支</span></div>'
-    + '<div class="cp-scroll" id="cp-list"></div></div>'
     + '<div class="branch-box"><div class="branch-head">'+ico('branch')+'分支树 · 调优路径<span class="tail">点击节点切换活跃分支</span></div>'
     + '<div class="branch-body" id="branch-body"></div></div>'
-    + '</div>'
-    + '<div class="tune-note">'+ico('mem')
-    + '<span><b>交互语义</b>：AI 调优不靠“打字”，而是不断产出曲线与数据。每轮保存一个检查点；你可以<b>停止当前 Agent</b>，在任意检查点<b>选择新参数</b>，长出一个新分支 —— 各分支结果并存可对比，最终挑最好的检查点固化。</span></div>'
-    + '</div>';
+    + '</div></div>';
 }
-function goalHTML(s){
+function goalPipelineHTML(s){
   var g = s.goal;
+  var mode = state.goalMode || 'serial';
+  var nodes = [
+    {agent:'/agent:migrate', name:'源码迁移', sub:g.sub[0], meta:'x86 指令改写 + 沙箱编译'},
+    {agent:'/agent:develop', name:'适配开发', sub:g.sub[1], meta:'cache-mw 鲲鹏适配'},
+    {agent:'/agent:tuning',  name:'参数调优', sub:g.sub[2], meta:'连接池寻优 · 检查点分支'},
+    {agent:'[qa]',           name:'质检交付', sub:g.sub[3], meta:'回归 + 打包交付'}
+  ];
+  var line = nodes.map(function(n, i){
+    var st = n.sub.status;
+    var cls = st==='done'?'done':st==='running'?'run':'waiting';
+    var sel = (state.goalNode||0)===i;
+    var arrow = '';
+    if(i<nodes.length-1){
+      if(mode==='parallel'){
+        arrow = '<span class="pl-arrow par"><span class="pl-dline"></span><span class="pl-dline"></span></span>';
+      }else{
+        arrow = '<span class="pl-arrow '+(st==='done'?'done':'')+'">'+ico('chev')+'</span>';
+      }
+    }
+    return '<button class="pl-node '+cls+(sel?' active':'')+'" data-act="goal-node" data-i="'+i+'">'
+      + '<span class="pln-top"><span class="pln-dot"></span><span class="pln-agent">'+n.agent+'</span><span class="pln-idx">0'+(i+1)+'</span></span>'
+      + '<span class="pln-name">'+n.name+'</span>'
+      + '<span class="pln-bar"><span class="pln-fill" style="width:'+n.sub.pct+'%"></span></span>'
+      + '<span class="pln-meta" data-meta="'+n.meta+'">'+n.sub.pct+'% · '+n.meta+'</span>'
+      + '</button>' + arrow;
+  }).join('');
   var kpis = [
     {l:'子目标', v:g.sub.filter(function(x){return x.status==='done';}).length+'', u:'/'+g.sub.length},
     {l:'迁移进度', v:g.sub[0].pct+'', u:'%'},
@@ -1907,27 +2148,20 @@ function goalHTML(s){
   ].map(function(k){ return '<div class="kpi"><div class="k-label">'+k.l+'</div><div class="k-val">'+k.v+'<span class="u"> '+k.u+'</span></div></div>'; }).join('');
   var C = 2*Math.PI*45;
   var off = (C*(1-g.pct/100)).toFixed(1);
-  var dag = [
-    {agent:'/goal', name:'目标分解', desc:'解析 /goal → 拆解 4 个子目标', st:'done', pct:100},
-    {agent:'/agent:migrate', name:'源码迁移', desc:'x86 指令改写 + 沙箱编译', st:g.sub[0].status, pct:g.sub[0].pct},
-    {agent:'/agent:develop', name:'适配开发', desc:'cache-mw 鲲鹏适配', st:g.sub[1].status, pct:g.sub[1].pct},
-    {agent:'/agent:tuning', name:'参数调优', desc:'连接池寻优 · 检查点分支', st:g.sub[2].status, pct:g.sub[2].pct},
-    {agent:'[qa]', name:'质检交付', desc:'回归 + 打包', st:g.sub[3].status, pct:g.sub[3].pct}
-  ].map(function(n,i){
-    var cls = n.st==='done'?'done':n.st==='running'?'run':'idle';
-    return '<div class="dag-node '+cls+'">'
-      + '<div class="dn-agent">'+n.agent+'</div><div class="dn-name">'+n.name+'</div>'
-      + '<div class="dn-desc">'+n.desc+'</div>'
-      + '<div class="dn-bar"><span class="dn-fill" style="width:'+n.pct+'%"></span></div>'
-      + '<div class="dn-foot"><span>'+n.pct+'%</span></div></div>'
-      + (i<4 ? '<div class="dag-edge '+(n.st==='done'?'done':'run')+'"></div>' : '');
-  }).join('');
   var chain = g.chain.map(function(c,i){
     return '<div class="chain-item '+c.st+'"><span class="ci-idx">0'+(i+1)+'</span>'
       + '<span class="ci-name">'+c.name+'</span><span class="ci-from">'+c.from+'</span>'
       + '<span class="ci-art">'+c.art+'</span></div>';
   }).join('');
-  return '<div class="goal-wrap">'
+  return '<div class="pl-wrap">'
+    + '<div class="pl-top">'
+    + '<span class="pl-title">'+ico('goal')+'/goal 全链路编排<span class="pl-sub" id="pl-mode-desc">'+(mode==='serial'?'串联：上游完成，下游自动接力':'并发：各 Agent 并行推进，Watchdog 统一调度')+'</span></span>'
+    + '<div class="pl-mode">'
+    + '<button class="'+(mode==='serial'?'on':'')+'" data-act="goal-mode" data-mode="serial">串联</button>'
+    + '<button class="'+(mode==='parallel'?'on':'')+'" data-act="goal-mode" data-mode="parallel">并发</button>'
+    + '</div></div>'
+    + '<div class="pl-line">'+line+'</div>'
+    + '<div class="pl-detail" id="pl-detail">'+plDetailHTML(s)+'</div>'
     + '<div class="kpi-row">'+kpis+'</div>'
     + '<div class="gauge-wrap"><div class="gauge">'
     + '<svg viewBox="0 0 120 120"><circle class="g-track" cx="60" cy="60" r="45"/>'
@@ -1936,11 +2170,36 @@ function goalHTML(s){
     + '<div class="gauge-side"><div class="gs-title">/goal 全链路目标</div>'
     + '<div class="gs-desc">把结算服务迁移到鲲鹏并完成适配开发与参数调优，最终打包交付。Watchdog 负责分解、监测与串联 —— 上游完成，下游自动接力。</div>'
     + '<div class="gs-steps">'+g.sub.map(function(x){ return '<span class="tag '+(x.status==='done'?'green':x.status==='running'?'':'gray')+'">'+esc(x.name)+'</span>'; }).join('')+'</div></div></div>'
-    + '<div class="dag-box"><div class="dag-head">'+ico('goal')+'依赖 DAG · 调度关系<span style="margin-left:auto" class="tail"></span></div>'
-    + '<div class="dag">'+dag+'</div></div>'
     + '<div class="chain-box"><div class="chain-head">'+ico('link')+'结果串联链 · 最终装配<span class="tail" style="margin-left:auto">Watchdog 把各 Agent 产物拼成交付包</span></div>'
     + '<div class="chain-list">'+chain+'</div></div>'
     + '</div>';
+}
+function plDetailHTML(s){
+  var g = s.goal;
+  var idx = state.goalNode || 0;
+  var sub = g.sub[idx];
+  var isQa = sub.agent==='[qa]';
+  var agentKey = isQa ? 'goal' : sub.agent.replace('/agent:','');
+  var steps = isQa ? ['运行回归用例','核对验收清单','打包交付'] : AGENT_DEFS[agentKey].steps.slice(0,6);
+  var doneN = sub.status==='done' ? steps.length : (sub.pct>0 ? Math.max(1, Math.floor(sub.pct/100*steps.length)) : 0);
+  var runI = sub.status==='running' ? Math.min(doneN, steps.length-1) : -1;
+  var stepHtml = steps.map(function(st, j){
+    var cls = j<doneN?'done':(j===runI?'run':'');
+    var ic = j<doneN?ico('check'):j===runI?ico('spinner'):ico('clock');
+    return '<div class="pld-step '+cls+'"><span class="plds-ico">'+ic+'</span><span>'+esc(st)+'</span></div>';
+  }).join('');
+  var memIds = MEM_REFS[isQa?'goal':agentKey] || [];
+  var art = sub.art || '—';
+  var stateTxt = sub.status==='done'?'已完成':sub.status==='running'?'运行中':'等待接力';
+  return '<div class="pld-head"><span class="pld-title">'+esc(sub.name)+'</span>'
+    + '<span class="pld-sub">'+sub.agent+' · '+stateTxt+'</span></div>'
+    + '<div class="pld-bar-row"><span class="pld-bar"><span class="pld-fill" style="width:'+sub.pct+'%"></span></span>'
+    + '<span class="pld-pct">'+sub.pct+'%</span></div>'
+    + '<div class="pld-cur">'+(sub.status==='running'?'<span class="spin-ico">'+ico('spinner')+'</span>':'')+'<span>'
+    + (sub.status==='done' ? '子目标完成，产物已进入串联链' : sub.status==='running' ? 'Watchdog 监测中 · 当前步骤执行中' : '等待上游子目标完成，自动接力') + '</span></div>'
+    + '<div class="pld-steps">'+stepHtml+'</div>'
+    + '<div class="pld-foot"><span class="f-label">产物</span><span class="pld-art">'+esc(art)+'</span>'
+    + '<span class="f-label">记忆</span><span class="pld-art">og-memory · '+memIds.length+' 条</span></div>';
 }
 function artHTML(s){
   var arts = ARTIFACTS[s.agent] || [];
@@ -1987,7 +2246,7 @@ function renderSteps(s){
   }).join('');
 }
 function renderTuneDynamic(s){
-  /* 指标卡 */
+  /* 指标卡（右侧） */
   var mm = $('tune-metrics'); if(mm){
     mm.innerHTML = M_KEYS.map(function(k){
       var arr = s.tune.metrics[k.k];
@@ -2010,24 +2269,18 @@ function renderTuneDynamic(s){
         + '<svg class="m-trend" viewBox="0 0 100 24" preserveAspectRatio="none"><polyline points="'+poly+'" fill="none" stroke="'+color+'" stroke-width="1.6"/></svg></div>';
     }).join('');
   }
-  /* 检查点 */
-  var cp = $('cp-list'); if(cp){
-    cp.innerHTML = s.steps.map(function(name,j){
-      if(j===0) return '';
-      var idx = j; /* CP 编号 */
-      var isDone = idx <= s.i, isRun = idx === s.i+1;
-      var hasBranch = s.tune.branches.filter(function(b){ return b.from===idx; }).length>0;
-      var val = s.tune.metrics.qps[idx] !== undefined ? s.tune.metrics.qps[idx].toLocaleString() : '—';
-      var cls = isDone?'done':isRun?'run':'';
-      var icoEl = isDone?ico('check'):isRun?ico('spinner'):ico('clock');
-      var act = (isDone && idx>0 && s.status!=='done')
-        ? '<button class="cpi-act" data-cp="'+idx+'" title="在此检查点新建分支">+</button>' : '';
-      return '<div class="cp-item '+cls+'" role="button" tabindex="0" data-cp-select="'+idx+'">'
-        + '<span class="cpi-ico">'+icoEl+(hasBranch?'':'')+'</span>'
-        + '<span class="cpi-main"><span class="cpi-name">CP'+idx+' · '+esc(name.replace(/^第\d+轮 · /,''))+'</span>'
-        + '<span class="cpi-meta">'+esc(name)+'</span></span>'
-        + '<span class="cpi-val">'+val+' QPS</span>'+act+'</div>';
-    }).join('');
+  /* 对话消息流：增量追加 */
+  var flow = $('tune-flow');
+  if(flow){
+    var n = flow.querySelectorAll('.tc-msg').length;
+    if(n < s.tune.rounds.length){
+      var add = '';
+      for(var j=n;j<s.tune.rounds.length;j++){
+        add += roundMsgHTML(s, s.tune.rounds[j]);
+      }
+      flow.insertAdjacentHTML('beforeend', add);
+      flow.scrollTop = flow.scrollHeight;
+    }
   }
   /* 分支树 */
   var bb = $('branch-body'); if(bb){
@@ -2039,9 +2292,8 @@ function renderTuneDynamic(s){
         + '<span class="btn-ico" style="color:'+(b.id==='main'?'#0E7A8A':'#2F6FED')+'">'+ico(b.id==='main'?'curve':'branch')+'</span>'
         + '<span class="btn-name">'+esc(b.label)+'</span>'
         + '<span class="btn-meta">'+lastVal.toLocaleString()+' QPS'+(b.id===activeB.id?' · 活跃':'')+'</span></div>';
-      if(b.id!=='main') html += '<div class="bt-line"></div>';
     });
-    html += '<div class="branch-ctl"><span style="font-size:10.5px;color:var(--ink3)">从检查点新建分支：</span>'
+    html += '<div class="branch-ctl"><span style="font-size:10.5px;color:var(--ink3)">从当前检查点新建分支：</span>'
       + '<div class="param-picker">'+PARAMS.map(function(p){
           return '<button class="param-pick" data-param="'+p.k+'">'+p.label+'</button>';
         }).join('')+'</div></div>';
@@ -2050,22 +2302,29 @@ function renderTuneDynamic(s){
 }
 function renderGoalDynamic(s){
   var g = s.goal;
-  var fill = $('pc-fill');
   var C = 2*Math.PI*45, off = (C*(1-g.pct/100)).toFixed(1);
   var arc = document.querySelector('#detail .g-arc');
   if(arc){ arc.setAttribute('stroke-dashoffset', off); }
   var gn = document.querySelector('#detail .g-txt .gn');
   if(gn) gn.textContent = g.pct+'%';
-  var nodes = document.querySelectorAll('#detail .dag-node');
-  if(nodes.length===5){
-    nodes.forEach(function(n,ni){
-      var sub = g.sub[ni-1];
-      if(!sub) return;
-      n.className = 'dag-node '+(sub.status==='done'?'done':sub.status==='running'?'run':'idle');
-      var f = n.querySelector('.dn-fill'); if(f) f.style.width = sub.pct+'%';
-      var ft = n.querySelector('.dn-foot'); if(ft) ft.innerHTML = '<span>'+sub.pct+'%</span>';
-    });
-  }
+  /* 编排节点条 */
+  var pns = document.querySelectorAll('#detail .pl-node');
+  pns.forEach(function(n,ni){
+    var sub = g.sub[ni];
+    if(!sub) return;
+    n.className = 'pl-node '+(sub.status==='done'?'done':sub.status==='running'?'run':'waiting')+(ni===(state.goalNode||0)?' active':'');
+    var f = n.querySelector('.pln-fill'); if(f) f.style.width = sub.pct+'%';
+    var m = n.querySelector('.pln-meta'); if(m) m.textContent = sub.pct+'% · '+(n.querySelector('.pln-meta').dataset.meta||'');
+  });
+  var arrs = document.querySelectorAll('#detail .pl-arrow');
+  arrs.forEach(function(a,ai){
+    var st = g.sub[ai] ? g.sub[ai].status : 'waiting';
+    if(!a.classList.contains('par')){ a.className = 'pl-arrow '+(st==='done'?'done':''); }
+  });
+  /* 节点详情 */
+  var pd = $('pl-detail');
+  if(pd) pd.innerHTML = plDetailHTML(s);
+  /* 串联链 + KPI + 达成度 */
   var chain = document.querySelectorAll('#detail .chain-item');
   chain.forEach(function(c,ci){
     var st = g.chain[ci] ? g.chain[ci].st : 'waiting';
@@ -2192,13 +2451,23 @@ function branchFrom(cpIdx, paramKey){
   var s = active(); if(!s) return;
   if(!s.tune) return;
   var main = branchById(s, 'main');
-  var b = {id:'b'+(state.seq++), label:'分支 · '+paramKey+'@CP'+cpIdx, from:cpIdx, pts:main.pts.slice(0, cpIdx+1), active:true, param:paramKey};
+  var pDef = PARAMS.filter(function(p){ return p.k===paramKey; })[0];
+  var label = pDef ? pDef.label : paramKey;
+  var val = (pDef && pDef.vals && pDef.vals.length) ? pDef.vals[Math.min(cpIdx, pDef.vals.length-1)] : '—';
+  var b = {id:'b'+(state.seq++), label:'分支 · '+label+'@CP'+cpIdx, from:cpIdx, pts:main.pts.slice(0, cpIdx+1), active:true, param:paramKey, seq:1};
   s.tune.branches.forEach(function(x){ x.active=false; });
   s.tune.branches.push(b);
   s.tune.activeBranch = b.id;
-  s.logs.push({k:'run', t:'[tune] 于 CP'+cpIdx+' 新建分支：改调 '+paramKey+'，主分支已冻结'});
-  s.status = 'running'; s.wait = 0;
-  toast('新分支已长出','分支 · '+paramKey+'@CP'+cpIdx+' 从检查点 CP'+cpIdx+' 继续探索', '切换查看', s.id);
+  s.wait = 0;
+  if(s.status!=='running') s.status='running';
+  s.logs.push({k:'run', t:'[tune] 于 CP'+cpIdx+' 新建分支：改调 '+label+'，主分支已冻结'});
+  s.tune.rounds.push(roundData(s, s.tune.rounds.length, main.pts[cpIdx], s.tune.metrics.p99[cpIdx], s.tune.metrics.cpu[cpIdx], s.tune.metrics.rss[cpIdx], b.id, b.label, {
+    cp:'CP'+cpIdx+'·B1',
+    param:{k:paramKey, v:val, label:label},
+    from:cpIdx,
+    text:'用户介入：从检查点 CP'+cpIdx+' 换调「'+label+'」→ '+val+'。主分支于此冻结，新分支「'+b.label+'」继续压测寻优，最终与主分支对比。'
+  }));
+  toast('新分支已长出','分支 · '+label+'@CP'+cpIdx+' 从检查点 CP'+cpIdx+' 继续探索', '切换查看', s.id);
   renderTuneDynamic(s); updateTuneChart(s);
 }
 function selectBranch(s, bid){
@@ -2373,6 +2642,34 @@ document.addEventListener('click', function(e){
   if(t.closest('[data-act="stop-tune"]')){ stopTune(); return; }
   if(t.closest('[data-act="chain-go"]')){ chainGo(); return; }
 
+  /* /goal：节点切换 / 模式切换 */
+  var gnp = t.closest('[data-act="goal-node"]');
+  if(gnp && active() && active().goal){
+    state.goalNode = Number(gnp.dataset.i);
+    renderGoalDynamic(active());
+    return;
+  }
+  var gmd = t.closest('[data-act="goal-mode"]');
+  if(gmd && active() && active().goal){
+    state.goalMode = gmd.dataset.mode;
+    renderDetail();
+    return;
+  }
+
+  /* 调优对话流：介入 */
+  var intv = t.closest('[data-act="intervene"]');
+  if(intv && active() && active().tune){
+    var msg = intv.closest('.tc-msg');
+    var pnl = msg ? msg.querySelector('.tc-intv-panel') : null;
+    if(pnl) pnl.classList.toggle('open');
+    return;
+  }
+  var ip = t.closest('[data-act="intervene-param"]');
+  if(ip && active() && active().tune){
+    branchFrom(Number(ip.dataset.round), ip.dataset.param);
+    return;
+  }
+
   /* 调优：检查点新建分支 */
   var cpa = t.closest('[data-cp]');
   if(cpa){
@@ -2423,7 +2720,11 @@ state.sessions.forEach(function(s){ state.lastLen[s.id]=0; });
 bindStatic();
 renderApp();
 updateActive();
-setInterval(advance, 1400);
+setInterval(function(){
+  try{ advance(); }catch(err){}
+  updateActive();
+  renderSessions();
+}, 1400);
 
 }catch(err){
   var col = $('main-col');
